@@ -1,3 +1,5 @@
+//@ pragma UseQApplication
+pragma ComponentBehavior: Bound
 import Quickshell
 import QtQuick
 import QtQuick.Layouts
@@ -22,7 +24,7 @@ ShellRoot {
 
             screen: modelData
 
-            implicitHeight: 30
+            implicitHeight: 36
             color: "transparent"
 
             // Catppuccin Mocha palette
@@ -35,13 +37,30 @@ ShellRoot {
             readonly property color ctpLavender: "#b4befe"
             readonly property color ctpRed: "#f38ba8"
 
-            readonly property int barPadding: 6
-            readonly property int colPaddingX: 8
-            readonly property int colPaddingY: 4
+            readonly property real phi: 1.618
+            readonly property int baseFontSize: 14
+            readonly property int barPadding: Math.round(baseFontSize / phi)
+            readonly property int colPaddingX: Math.round(baseFontSize / phi)
+            readonly property int colPaddingY: Math.round(baseFontSize / (phi * phi))
             readonly property int colRadius: 8
-            readonly property int iconSize: 18
-            readonly property int colSpacing: 6
+            readonly property int iconSize: Math.round(baseFontSize * phi)
+            readonly property int colSpacing: Math.round(baseFontSize / (phi * phi))
+            readonly property int trayClockGap: Math.round(baseFontSize / phi)
 
+            property string dateText: ""
+            property string timeText: ""
+            function updateTime() {
+                dateText = Qt.formatDateTime(new Date(), "yyyy/MM/dd");
+                timeText = Qt.formatDateTime(new Date(), "HH:mm");
+            }
+
+            Component.onCompleted: updateTime()
+            Timer {
+                interval: 1000
+                running: true
+                repeat: true
+                onTriggered: updateTime()
+            }
             Item {
                 id: content
                 anchors.fill: parent
@@ -57,7 +76,7 @@ ShellRoot {
                     border.width: 1
                     border.color: ctpOverlay0
 
-                    implicitHeight: workspaceRow.implicitHeight + (colPaddingY * 2)
+                    implicitHeight: Math.max(iconSize, workspaceRow.implicitHeight) + (colPaddingY * 2)
                     implicitWidth: workspaceRow.implicitWidth + (colPaddingX * 2)
 
                     RowLayout {
@@ -89,7 +108,7 @@ ShellRoot {
                                     anchors.centerIn: parent
                                     text: modelData.name
                                     color: modelData.focused ? ctpBase : ctpText
-                                    font.pixelSize: 12
+                                    font.pixelSize: baseFontSize
                                 }
 
                                 MouseArea {
@@ -104,14 +123,15 @@ ShellRoot {
                 // Right column: System tray
                 Rectangle {
                     id: trayCol
-                    anchors.right: parent.right
+                    anchors.right: clockCol.left
+                    anchors.rightMargin: trayClockGap
                     anchors.verticalCenter: parent.verticalCenter
                     color: ctpSurface0
                     radius: colRadius
                     border.width: 1
                     border.color: ctpOverlay0
 
-                    implicitHeight: trayRow.implicitHeight + (colPaddingY * 2)
+                    implicitHeight: Math.max(iconSize, trayRow.implicitHeight) + (colPaddingY * 2)
                     implicitWidth: trayRow.implicitWidth + (colPaddingX * 2)
 
                     RowLayout {
@@ -139,19 +159,33 @@ ShellRoot {
                                     source: trayItemRoot.modelData.icon
                                 }
 
+                                QsMenuAnchor {
+                                    id: trayMenu
+                                    menu: trayItemRoot.modelData.menu
+                                    anchor.window: root
+                                }
+
                                 MouseArea {
                                     anchors.fill: parent
                                     acceptedButtons: Qt.LeftButton | Qt.RightButton
 
                                     onClicked: function (mouse) {
                                         if (mouse.button === Qt.RightButton && trayItemRoot.modelData.hasMenu) {
-                                            const pos = trayItemRoot.mapToItem(root, mouse.x, mouse.y);
-                                            trayItemRoot.modelData.display(root, pos.x, pos.y);
+                                            const pos = trayItemRoot.mapToItem(content, 0, 0);
+                                            trayMenu.anchor.rect.x = pos.x;
+                                            trayMenu.anchor.rect.y = pos.y + trayItemRoot.height;
+                                            trayMenu.anchor.rect.width = trayItemRoot.width;
+                                            trayMenu.anchor.rect.height = trayItemRoot.height;
+                                            trayMenu.open();
                                         } else if (!trayItemRoot.modelData.onlyMenu) {
                                             trayItemRoot.modelData.activate();
                                         } else if (trayItemRoot.modelData.hasMenu) {
-                                            const pos = trayItemRoot.mapToItem(root, mouse.x, mouse.y);
-                                            trayItemRoot.modelData.display(root, pos.x, pos.y);
+                                            const pos = trayItemRoot.mapToItem(content, 0, 0);
+                                            trayMenu.anchor.rect.x = pos.x;
+                                            trayMenu.anchor.rect.y = pos.y + trayItemRoot.height;
+                                            trayMenu.anchor.rect.width = trayItemRoot.width;
+                                            trayMenu.anchor.rect.height = trayItemRoot.height;
+                                            trayMenu.open();
                                         }
                                     }
                                 }
@@ -159,7 +193,34 @@ ShellRoot {
                         }
                     }
                 }
+                Rectangle {
+                    id: clockCol
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: ctpSurface0
+                    radius: colRadius
+                    border.width: 1
+                    border.color: ctpOverlay0
 
+                    implicitHeight: Math.max(iconSize, clockRow.implicitHeight) + (colPaddingY * 2)
+                    implicitWidth: clockRow.implicitWidth + (colPaddingX * 2)
+
+                    RowLayout {
+                        id: clockRow
+                        anchors.fill: parent
+                        anchors.leftMargin: colPaddingX
+                        anchors.rightMargin: colPaddingX
+                        anchors.topMargin: colPaddingY
+                        anchors.bottomMargin: colPaddingY
+                        spacing: colSpacing
+
+                        Text {
+                            color: ctpSubtext1
+                            font.pixelSize: baseFontSize
+                            text: ` ${root.dateText}  ${root.timeText}`
+                        }
+                    }
+                }
                 // Center column: MPRIS (hidden when not playing)
                 Rectangle {
                     id: mediaCol
@@ -189,13 +250,13 @@ ShellRoot {
                     TextMetrics {
                         id: mediaTitleMetrics
                         text: mediaCol.mediaTitle
-                        font.pixelSize: 12
+                        font.pixelSize: baseFontSize
                     }
 
                     TextMetrics {
                         id: mediaStatusMetrics
                         text: mediaCol.mediaStatusIcon
-                        font.pixelSize: 12
+                        font.pixelSize: baseFontSize
                     }
 
                     implicitHeight: Math.max(mediaTitleMetrics.height, mediaStatusMetrics.height, iconSize) + (colPaddingY * 2)
@@ -211,14 +272,14 @@ ShellRoot {
 
                         Text {
                             color: ctpSubtext1
-                            font.pixelSize: 12
+                            font.pixelSize: baseFontSize
                             text: mediaCol.mediaStatusIcon
                         }
 
                         Text {
                             Layout.fillWidth: true
                             color: ctpText
-                            font.pixelSize: 12
+                            font.pixelSize: baseFontSize
                             elide: Text.ElideRight
                             text: mediaCol.mediaTitle
                         }

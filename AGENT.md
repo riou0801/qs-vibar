@@ -12,11 +12,13 @@ All non-column background is transparent; each column is a rounded, bordered pil
 ## Runtime Environment
 - Wayland compositor: Sway
 - Toolkit: Quickshell (Qt/QML)
+- Quickshell version: 0.2.1
 - Icon handling: System tray items use Qt icon lookup; ensure Qt icon theme is available.
 - Nerd Font glyphs are used for MPRIS status icons.
 
 ## Files
 - `bar.qml`: Main bar implementation (entrypoint when launching `qs -p ~/.config/quickshell/bar.qml`)
+- `notify.qml`: Notification daemon UI (entrypoint when launching `qs -p ~/.config/quickshell/notify.qml`)
 
 ## Visual Design
 ### Palette (Catppuccin Mocha)
@@ -68,6 +70,14 @@ All non-column background is transparent; each column is a rounded, bordered pil
 - Icons rendered with `IconImage`.
 - Right-click opens tray menu if available.
 - Left-click activates item unless it is menu-only.
+
+## Notification Behavior
+- Uses `Quickshell.Services.Notifications` (NotificationServer).
+- Top-center popup on the focused monitor only.
+- Max 2 notifications; older ones are hidden.
+- Fixed timeout: 3 seconds with progress bar.
+- Icons shown when provided by the app or image hint.
+- Border color: Blue for default, Red for critical.
 
 ## Notes / Caveats
 - Qt icon themes must be available for tray icons.
