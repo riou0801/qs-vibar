@@ -47,6 +47,8 @@ ShellRoot {
             readonly property int colSpacing: Math.round(baseFontSize / (phi * phi))
             readonly property int trayClockGap: Math.round(baseFontSize / phi)
 
+            readonly property string fontName: "NotoSans Nerd Font"
+
             property string dateText: ""
             property string timeText: ""
             function updateTime() {
@@ -108,6 +110,7 @@ ShellRoot {
                                     anchors.centerIn: parent
                                     text: modelData.name
                                     color: modelData.focused ? ctpBase : ctpText
+                                    font.family: fontName
                                     font.pixelSize: baseFontSize
                                 }
 
@@ -216,8 +219,9 @@ ShellRoot {
 
                         Text {
                             color: ctpSubtext1
+                            font.family: fontName
                             font.pixelSize: baseFontSize
-                            text: ` ${root.dateText}  ${root.timeText}`
+                            text: ` ${root.dateText} 󰇙  ${root.timeText}`
                         }
                     }
                 }
@@ -250,12 +254,14 @@ ShellRoot {
                     TextMetrics {
                         id: mediaTitleMetrics
                         text: mediaCol.mediaTitle
+                        font.family: fontName
                         font.pixelSize: baseFontSize
                     }
 
                     TextMetrics {
                         id: mediaStatusMetrics
                         text: mediaCol.mediaStatusIcon
+                        font.family: fontName
                         font.pixelSize: baseFontSize
                     }
 
@@ -272,6 +278,7 @@ ShellRoot {
 
                         Text {
                             color: ctpSubtext1
+                            font.family: fontName
                             font.pixelSize: baseFontSize
                             text: mediaCol.mediaStatusIcon
                         }
@@ -279,6 +286,7 @@ ShellRoot {
                         Text {
                             Layout.fillWidth: true
                             color: ctpText
+                            font.family: fontName
                             font.pixelSize: baseFontSize
                             elide: Text.ElideRight
                             text: mediaCol.mediaTitle
