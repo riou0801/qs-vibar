@@ -16,6 +16,7 @@ ShellRoot {
 
         WlSessionLockSurface {
             LockSurface {
+                wallpaperSource: "/home/riou/.config/background/catppuccin_ekg_1.png"
                 anchors.fill: parent
                 context: lockContext
             }

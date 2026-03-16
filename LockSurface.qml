@@ -14,13 +14,14 @@ Rectangle {
     readonly property color ctpSubtext1: "#bac2de"
     readonly property color ctpLavender: "#b4befe"
     readonly property color ctpRed: "#f38ba8"
+    required property string wallpaperSource
     readonly property string fontName: "NotoSans Nerd Font"
 
     color: ctpBase
 
     Image {
         anchors.fill: parent
-        source: "/home/riou/.config/background/catppuccin_ekg_1.png"
+        source: root.wallpaperSource
         fillMode: Image.PreserveAspectCrop
     }
 
