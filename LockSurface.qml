@@ -18,13 +18,19 @@ Rectangle {
 
     color: ctpBase
 
+    Image {
+        anchors.fill: parent
+        source: "/home/riou/.config/background/catppuccin_ekg_1.png"
+        fillMode: Image.PreserveAspectCrop
+    }
+
     Column {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: parent.height * 0.2
+        id: clockArea
+        anchors.centerIn: parent
         spacing: 8
 
         Text {
+            anchors.horizontalCenter: parent.horizontalCenter
             font.pixelSize: 96
             color: root.ctpText
             font.family: root.fontName
@@ -33,6 +39,7 @@ Rectangle {
         }
 
         Text {
+            anchors.horizontalCenter: parent.horizontalCenter
             font.pixelSize: 20
             color: root.ctpSubtext1
             font.family: root.fontName
@@ -42,8 +49,9 @@ Rectangle {
     }
 
     ColumnLayout {
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: parent.height * 0.1
+        anchors.top: clockArea.bottom
+        anchors.topMargin: 40
+        anchors.horizontalCenter: parent.horizontalCenter
         spacing: 12
 
         Rectangle {
