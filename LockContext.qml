@@ -27,6 +27,12 @@ Scope {
                 this.respond(root.currentText)
             }
         }
+        onError: (err) => {
+            console.error("PAM error:", err)
+            root.currentText = ""
+            root.showFailure = true
+            root.unlockInProgress = false
+        }
         onCompleted: (result) => {
             if (result === PamResult.Success) {
                 root.unlocked()

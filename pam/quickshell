@@ -1,1 +1,1 @@
-auth include system-auth
+auth required pam_unix.so
