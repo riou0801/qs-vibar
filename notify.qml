@@ -1,3 +1,4 @@
+pragma ComponentBehavior: Bound
 import Quickshell
 import QtQuick
 import QtQuick.Layouts
@@ -11,11 +12,15 @@ ShellRoot {
 
     readonly property int maxNotifications: 2
     readonly property int timeoutMs: 3000
-    readonly property int barPadding: 8
-    readonly property int cardRadius: 8
-    readonly property int cardPadding: 10
-    readonly property int cardSpacing: 8
-    readonly property int iconSize: 28
+
+    // Golden ratio based design (matching bar.qml)
+    readonly property real phi: 1.618
+    readonly property int baseFontSize: 14
+    readonly property int barPadding: Math.round(root.baseFontSize / root.phi)
+    readonly property int cardPadding: Math.round(root.baseFontSize / root.phi)
+    readonly property int cardSpacing: Math.round(root.baseFontSize / (root.phi * root.phi))
+    readonly property int cardRadius: Math.round(root.baseFontSize / (root.phi * root.phi)) + 3
+    readonly property int iconSize: Math.round(root.baseFontSize * root.phi)
 
     // Catppuccin Mocha palette
     readonly property color ctpBase: "#1e1e2e"
@@ -25,6 +30,9 @@ ShellRoot {
     readonly property color ctpSubtext1: "#bac2de"
     readonly property color ctpBlue: "#89b4fa"
     readonly property color ctpRed: "#f38ba8"
+
+    // Font settings (matching bar.qml)
+    readonly property string fontFamily: "Noto Sans CJK JP"
 
     property var notificationTimes: ({})
     property int ticker: 0
@@ -86,7 +94,7 @@ ShellRoot {
                 right: true
             }
 
-            screen: modelData
+            screen: window.modelData
             color: "transparent"
             aboveWindows: true
             exclusiveZone: 0
@@ -98,7 +106,7 @@ ShellRoot {
                 id: popup
                 anchor.window: window
                 anchor.rect.x: (window.width - width) / 2
-                anchor.rect.y: barPadding
+                anchor.rect.y: root.barPadding
                 implicitWidth: Math.min(window.width, 480)
                 implicitHeight: stack.implicitHeight
                 color: "transparent"
@@ -107,7 +115,7 @@ ShellRoot {
                 ColumnLayout {
                     id: stack
                     width: parent.width
-                    spacing: cardSpacing
+                    spacing: root.cardSpacing
 
                     Repeater {
                         model: root.latestNotifications()
@@ -122,47 +130,47 @@ ShellRoot {
                                 return Math.max(0, 1 - (elapsed / root.timeoutMs));
                             }
 
-                            radius: cardRadius
-                            color: ctpSurface0
+                            radius: root.cardRadius
+                            color: root.ctpSurface0
                             border.width: 1
-                            border.color: modelData.urgency === NotificationUrgency.Critical ? ctpRed : ctpBlue
+                            border.color: modelData.urgency === NotificationUrgency.Critical ? root.ctpRed : root.ctpBlue
 
                             Layout.fillWidth: true
-                            implicitHeight: Math.max(iconSize, summaryText.implicitHeight + bodyText.implicitHeight + 6) + (cardPadding * 2)
+                            implicitHeight: Math.max(root.iconSize, summaryText.implicitHeight + bodyText.implicitHeight + 6) + (root.cardPadding * 2)
 
                             MouseArea {
                                 anchors.fill: parent
-                                onClicked: modelData.dismiss()
+                                onClicked: card.modelData.dismiss()
                             }
 
                             RowLayout {
                                 id: cardRow
                                 anchors.fill: parent
-                                anchors.margins: cardPadding
+                                anchors.margins: root.cardPadding
                                 spacing: 10
 
                                 Item {
-                                    width: iconSize
-                                    height: iconSize
+                                    implicitWidth: root.iconSize
+                                    implicitHeight: root.iconSize
                                     visible: iconImage.visible || appIcon.visible
 
                                     Image {
                                         id: iconImage
                                         anchors.centerIn: parent
-                                        width: iconSize
-                                        height: iconSize
-                                        source: modelData.image
+                                        width: root.iconSize
+                                        height: root.iconSize
+                                        source: card.modelData.image
                                         fillMode: Image.PreserveAspectFit
                                         smooth: true
-                                        visible: modelData.image && modelData.image !== ""
+                                        visible: card.modelData.image && card.modelData.image !== ""
                                     }
 
                                     IconImage {
                                         id: appIcon
                                         anchors.centerIn: parent
-                                        implicitSize: iconSize
-                                        source: modelData.appIcon
-                                        visible: !iconImage.visible && modelData.appIcon && modelData.appIcon !== ""
+                                        implicitSize: root.iconSize
+                                        source: card.modelData.appIcon
+                                        visible: !iconImage.visible && card.modelData.appIcon && card.modelData.appIcon !== ""
                                     }
                                 }
 
@@ -172,8 +180,9 @@ ShellRoot {
 
                                     Text {
                                         id: summaryText
-                                        text: modelData.summary || modelData.appName
-                                        color: ctpText
+                                        text: card.modelData.summary || card.modelData.appName
+                                        color: root.ctpText
+                                        font.family: root.fontFamily
                                         font.pixelSize: 15
                                         elide: Text.ElideRight
                                         wrapMode: Text.NoWrap
@@ -182,8 +191,9 @@ ShellRoot {
 
                                     Text {
                                         id: bodyText
-                                        text: modelData.body
-                                        color: ctpSubtext1
+                                        text: card.modelData.body
+                                        color: root.ctpSubtext1
+                                        font.family: root.fontFamily
                                         font.pixelSize: 13
                                         elide: Text.ElideRight
                                         wrapMode: Text.WordWrap
@@ -191,8 +201,8 @@ ShellRoot {
                                     }
 
                                     Rectangle {
-                                        height: 2
-                                        color: ctpOverlay0
+                                        implicitHeight: 2
+                                        color: root.ctpOverlay0
                                         Layout.fillWidth: true
 
                                         Rectangle {
@@ -200,7 +210,7 @@ ShellRoot {
                                             anchors.top: parent.top
                                             anchors.bottom: parent.bottom
                                             width: parent.width * card.progress
-                                            color: modelData.urgency === NotificationUrgency.Critical ? ctpRed : ctpBlue
+                                            color: card.modelData.urgency === NotificationUrgency.Critical ? root.ctpRed : root.ctpBlue
                                         }
                                     }
                                 }
