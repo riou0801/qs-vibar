@@ -22,8 +22,10 @@ Scope {
         id: pam
         configDirectory: "pam"
         config: "quickshell"
-        onPamMessage: (message) => {
-            if (message.responseRequired) message.respond(root.currentText)
+        onPamMessage: {
+            if (this.responseRequired) {
+                this.respond(root.currentText)
+            }
         }
         onCompleted: (result) => {
             if (result === PamResult.Success) {
