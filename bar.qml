@@ -7,6 +7,7 @@ import Quickshell.Widgets
 import Quickshell.I3
 import Quickshell.Services.Mpris
 import Quickshell.Services.SystemTray
+import Quickshell.DBusMenu
 
 ShellRoot {
     Variants {
@@ -61,34 +62,34 @@ ShellRoot {
                 interval: 1000
                 running: true
                 repeat: true
-                onTriggered: updateTime()
+                onTriggered: root.updateTime()
             }
             Item {
                 id: content
                 anchors.fill: parent
-                anchors.margins: barPadding
+                anchors.margins: root.barPadding
 
                 // Left column: Workspaces
                 Rectangle {
                     id: workspaceCol
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-                    color: ctpSurface0
-                    radius: colRadius
+                    color: root.ctpSurface0
+                    radius: root.colRadius
                     border.width: 1
-                    border.color: ctpOverlay0
+                    border.color: root.ctpOverlay0
 
-                    implicitHeight: Math.max(iconSize, workspaceRow.implicitHeight) + (colPaddingY * 2)
-                    implicitWidth: workspaceRow.implicitWidth + (colPaddingX * 2)
+                    implicitHeight: Math.max(root.iconSize, workspaceRow.implicitHeight) + (root.colPaddingY * 2)
+                    implicitWidth: workspaceRow.implicitWidth + (root.colPaddingX * 2)
 
                     RowLayout {
                         id: workspaceRow
                         anchors.fill: parent
-                        anchors.leftMargin: colPaddingX
-                        anchors.rightMargin: colPaddingX
-                        anchors.topMargin: colPaddingY
-                        anchors.bottomMargin: colPaddingY
-                        spacing: colSpacing
+                        anchors.leftMargin: root.colPaddingX
+                        anchors.rightMargin: root.colPaddingX
+                        anchors.topMargin: root.colPaddingY
+                        anchors.bottomMargin: root.colPaddingY
+                        spacing: root.colSpacing
 
                         Repeater {
                             model: I3.workspaces
@@ -98,20 +99,20 @@ ShellRoot {
                                 required property I3Workspace modelData
 
                                 radius: 4
-                                color: modelData.focused ? ctpLavender : modelData.active ? ctpSurface1 : "transparent"
+                                color: modelData.focused ? root.ctpLavender : modelData.active ? root.ctpSurface1 : "transparent"
 
                                 border.width: modelData.urgent ? 1 : 0
-                                border.color: modelData.urgent ? ctpRed : "transparent"
+                                border.color: modelData.urgent ? root.ctpRed : "transparent"
 
                                 implicitHeight: 18
                                 implicitWidth: 22
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: modelData.name
-                                    color: modelData.focused ? ctpBase : ctpText
-                                    font.family: fontName
-                                    font.pixelSize: baseFontSize
+                                    text: wsItem.modelData.name
+                                    color: wsItem.modelData.focused ? root.ctpBase : root.ctpText
+                                    font.family: root.fontName
+                                    font.pixelSize: root.baseFontSize
                                 }
 
                                 MouseArea {
@@ -127,24 +128,24 @@ ShellRoot {
                 Rectangle {
                     id: trayCol
                     anchors.right: clockCol.left
-                    anchors.rightMargin: trayClockGap
+                    anchors.rightMargin: root.trayClockGap
                     anchors.verticalCenter: parent.verticalCenter
-                    color: ctpSurface0
-                    radius: colRadius
+                    color: root.ctpSurface0
+                    radius: root.colRadius
                     border.width: 1
-                    border.color: ctpOverlay0
+                    border.color: root.ctpOverlay0
 
-                    implicitHeight: Math.max(iconSize, trayRow.implicitHeight) + (colPaddingY * 2)
-                    implicitWidth: trayRow.implicitWidth + (colPaddingX * 2)
+                    implicitHeight: Math.max(root.iconSize, trayRow.implicitHeight) + (root.colPaddingY * 2)
+                    implicitWidth: trayRow.implicitWidth + (root.colPaddingX * 2)
 
                     RowLayout {
                         id: trayRow
                         anchors.fill: parent
-                        anchors.leftMargin: colPaddingX
-                        anchors.rightMargin: colPaddingX
-                        anchors.topMargin: colPaddingY
-                        anchors.bottomMargin: colPaddingY
-                        spacing: colSpacing
+                        anchors.leftMargin: root.colPaddingX
+                        anchors.rightMargin: root.colPaddingX
+                        anchors.topMargin: root.colPaddingY
+                        anchors.bottomMargin: root.colPaddingY
+                        spacing: root.colSpacing
 
                         Repeater {
                             model: SystemTray.items
@@ -153,12 +154,12 @@ ShellRoot {
                                 id: trayItemRoot
                                 required property SystemTrayItem modelData
 
-                                width: iconSize
-                                height: iconSize
+                                width: root.iconSize
+                                height: root.iconSize
 
                                 IconImage {
                                     anchors.centerIn: parent
-                                    implicitSize: iconSize
+                                    implicitSize: root.iconSize
                                     source: trayItemRoot.modelData.icon
                                 }
 
@@ -200,27 +201,27 @@ ShellRoot {
                     id: clockCol
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    color: ctpSurface0
-                    radius: colRadius
+                    color: root.ctpSurface0
+                    radius: root.colRadius
                     border.width: 1
-                    border.color: ctpOverlay0
+                    border.color: root.ctpOverlay0
 
-                    implicitHeight: Math.max(iconSize, clockRow.implicitHeight) + (colPaddingY * 2)
-                    implicitWidth: clockRow.implicitWidth + (colPaddingX * 2)
+                    implicitHeight: Math.max(root.iconSize, clockRow.implicitHeight) + (root.colPaddingY * 2)
+                    implicitWidth: clockRow.implicitWidth + (root.colPaddingX * 2)
 
                     RowLayout {
                         id: clockRow
                         anchors.fill: parent
-                        anchors.leftMargin: colPaddingX
-                        anchors.rightMargin: colPaddingX
-                        anchors.topMargin: colPaddingY
-                        anchors.bottomMargin: colPaddingY
-                        spacing: colSpacing
+                        anchors.leftMargin: root.colPaddingX
+                        anchors.rightMargin: root.colPaddingX
+                        anchors.topMargin: root.colPaddingY
+                        anchors.bottomMargin: root.colPaddingY
+                        spacing: root.colSpacing
 
                         Text {
-                            color: ctpSubtext1
-                            font.family: fontName
-                            font.pixelSize: baseFontSize
+                            color: root.ctpSubtext1
+                            font.family: root.fontName
+                            font.pixelSize: root.baseFontSize
                             text: ` ${root.dateText} 󰇙  ${root.timeText}`
                         }
                     }
@@ -229,10 +230,10 @@ ShellRoot {
                 Rectangle {
                     id: mediaCol
                     anchors.centerIn: parent
-                    color: ctpSurface0
-                    radius: colRadius
+                    color: root.ctpSurface0
+                    radius: root.colRadius
                     border.width: 1
-                    border.color: ctpOverlay0
+                    border.color: root.ctpOverlay0
 
                     property var activePlayer: {
                         const players = Mpris.players.values;
@@ -249,45 +250,45 @@ ShellRoot {
 
                     readonly property string mediaStatusIcon: activePlayer ? (activePlayer.isPlaying ? "" : "") : ""
 
-                    readonly property int availableWidth: Math.max(0, parent.width - workspaceCol.width - trayCol.width - (colPaddingX * 2) - 24)
+                    readonly property int availableWidth: Math.max(0, parent.width - workspaceCol.width - trayCol.width - (root.colPaddingX * 2) - 24)
 
                     TextMetrics {
                         id: mediaTitleMetrics
                         text: mediaCol.mediaTitle
-                        font.family: fontName
-                        font.pixelSize: baseFontSize
+                        font.family: root.fontName
+                        font.pixelSize: root.baseFontSize
                     }
 
                     TextMetrics {
                         id: mediaStatusMetrics
                         text: mediaCol.mediaStatusIcon
-                        font.family: fontName
-                        font.pixelSize: baseFontSize
+                        font.family: root.fontName
+                        font.pixelSize: root.baseFontSize
                     }
 
-                    implicitHeight: Math.max(mediaTitleMetrics.height, mediaStatusMetrics.height, iconSize) + (colPaddingY * 2)
-                    width: Math.min(availableWidth, mediaStatusMetrics.width + colSpacing + mediaTitleMetrics.width + (colPaddingX * 2))
+                    implicitHeight: Math.max(mediaTitleMetrics.height, mediaStatusMetrics.height, root.iconSize) + (root.colPaddingY * 2)
+                    width: Math.min(availableWidth, mediaStatusMetrics.width + root.colSpacing + mediaTitleMetrics.width + (root.colPaddingX * 2))
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: colPaddingX
-                        anchors.rightMargin: colPaddingX
-                        anchors.topMargin: colPaddingY
-                        anchors.bottomMargin: colPaddingY
-                        spacing: colSpacing
+                        anchors.leftMargin: root.colPaddingX
+                        anchors.rightMargin: root.colPaddingX
+                        anchors.topMargin: root.colPaddingY
+                        anchors.bottomMargin: root.colPaddingY
+                        spacing: root.colSpacing
 
                         Text {
-                            color: ctpSubtext1
-                            font.family: fontName
-                            font.pixelSize: baseFontSize
+                            color: root.ctpSubtext1
+                            font.family: root.fontName
+                            font.pixelSize: root.baseFontSize
                             text: mediaCol.mediaStatusIcon
                         }
 
                         Text {
                             Layout.fillWidth: true
-                            color: ctpText
-                            font.family: fontName
-                            font.pixelSize: baseFontSize
+                            color: root.ctpText
+                            font.family: root.fontName
+                            font.pixelSize: root.baseFontSize
                             elide: Text.ElideRight
                             text: mediaCol.mediaTitle
                         }
