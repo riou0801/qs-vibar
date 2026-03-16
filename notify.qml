@@ -182,6 +182,7 @@ ShellRoot {
                                         id: summaryText
                                         text: card.modelData.summary || card.modelData.appName
                                         color: root.ctpText
+                                        font.family: root.fontFamily
                                         font.pixelSize: 15
                                         elide: Text.ElideRight
                                         wrapMode: Text.NoWrap
@@ -192,6 +193,7 @@ ShellRoot {
                                         id: bodyText
                                         text: card.modelData.body
                                         color: root.ctpSubtext1
+                                        font.family: root.fontFamily
                                         font.pixelSize: 13
                                         elide: Text.ElideRight
                                         wrapMode: Text.WordWrap
