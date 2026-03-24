@@ -1,7 +1,11 @@
+pragma ComponentBehavior: Bound
 import Quickshell
 import QtQuick
 
 ShellRoot {
+    id: shell
+    property alias greetContext: greetContext
+
     GreetContext {
         id: greetContext
         sessionCommand: ["sway"]
@@ -11,7 +15,9 @@ ShellRoot {
         model: Quickshell.screens
 
         PanelWindow {
+            id: root
             required property var modelData
+            readonly property GreetContext greetContext: shell.greetContext
             screen: modelData
 
             anchors {
@@ -25,7 +31,7 @@ ShellRoot {
 
             GreetSurface {
                 anchors.fill: parent
-                context: greetContext
+                context: root.greetContext
                 wallpaperSource: "/home/riou/.config/background/catppuccin_ekg_1.png"
             }
         }

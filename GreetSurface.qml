@@ -167,7 +167,6 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: 320
                 height: 36
-                topPadding: 0
 
                 // パネル内の実際のレイアウト行
                 Row {
