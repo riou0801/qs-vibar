@@ -19,6 +19,7 @@ ShellRoot {
             required property var modelData
             readonly property GreetContext greetContext: shell.greetContext
             screen: modelData
+            focusable: true
 
             anchors {
                 top: true
