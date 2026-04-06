@@ -250,8 +250,6 @@ ShellRoot {
 
                     readonly property string mediaStatusIcon: activePlayer ? (activePlayer.isPlaying ? "" : "") : ""
 
-                    readonly property int availableWidth: Math.max(0, parent.width - workspaceCol.width - trayCol.width - (root.colPaddingX * 2) - 24)
-
                     TextMetrics {
                         id: mediaTitleMetrics
                         text: mediaCol.mediaTitle
@@ -267,9 +265,10 @@ ShellRoot {
                     }
 
                     implicitHeight: Math.max(mediaTitleMetrics.height, mediaStatusMetrics.height, root.iconSize) + (root.colPaddingY * 2)
-                    width: Math.min(availableWidth, mediaStatusMetrics.width + root.colSpacing + mediaTitleMetrics.width + (root.colPaddingX * 2))
+                    implicitWidth: Math.min(mediaRow.implicitWidth + (root.colPaddingX * 2))
 
                     RowLayout {
+                        id: mediaRow
                         anchors.fill: parent
                         anchors.leftMargin: root.colPaddingX
                         anchors.rightMargin: root.colPaddingX
