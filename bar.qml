@@ -244,7 +244,7 @@ ShellRoot {
                         return players.length ? players[0] : null;
                     }
 
-                    visible: !!activePlayer
+                    visible: !!activePlayer && activePlayer.isPlaying
 
                     readonly property string mediaTitle: activePlayer ? `${activePlayer.trackArtist || "Unknown Artist"} - ${activePlayer.trackTitle || "Unknown Title"}` : ""
 
@@ -265,7 +265,8 @@ ShellRoot {
                     }
 
                     implicitHeight: Math.max(mediaTitleMetrics.height, mediaStatusMetrics.height, root.iconSize) + (root.colPaddingY * 2)
-                    implicitWidth: Math.min(mediaRow.implicitWidth + (root.colPaddingX * 2))
+                    readonly property int mediaMaxWidth: Math.round(root.width * 0.35)
+                    implicitWidth: Math.min(mediaRow.implicitWidth + (root.colPaddingX * 2), mediaMaxWidth)
 
                     RowLayout {
                         id: mediaRow
